@@ -26,3 +26,7 @@ addopts = "-s --durations=0"
 testpaths = [
     "test",
 ]
+
+[mypy]
+python_version = 3.9
+plugins = ["returns.contrib.mypy.returns_plugin"]
