@@ -1,8 +1,8 @@
+from typing import Callable, Any
 import os
 import io
 import ftplib
 import csv
-from typing import Callable
 
 from returns.io import IOResultE, impure_safe
 
@@ -40,12 +40,13 @@ def parse_data(output: io.BytesIO) -> list[dict]:
     return [i for i in csv.DictReader(io.StringIO(output.read().decode("utf-8-sig")))]
 
 
-def mv_to_dir(dir_: str):
-    def mv(client: ftplib.FTP, filename: str):
+def mv_to_dir(
+    dir_: str,
+) -> Callable[[ftplib.FTP, str], Callable[[Any], IOResultE[None]]]:
+    def mv(client: ftplib.FTP, filename: str) -> Callable[[Any], IOResultE[None]]:
         @impure_safe
-        def _mv(result: int):
+        def _mv(*args) -> None:
             client.rename(filename, f"{dir_}/{filename}")
-            return result
 
         return _mv
 
