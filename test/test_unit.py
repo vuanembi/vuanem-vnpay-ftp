@@ -14,6 +14,9 @@ def csv_data() -> io.BytesIO:
     with open("test\VNPAY.POS.csv", "rb") as f:
         return io.BytesIO(f.read())
 
+@pytest.fixture()
+def filename() -> str:
+    return "VNPAY.POS (62).csv"
 
 def test_list_files():
     with FTPRepo.FTP_CLIENT() as client:
@@ -48,3 +51,7 @@ def test_load(csv_data):
     )
     assert res
 
+def test_process(filename):
+    with FTPRepo.FTP_CLIENT() as client:
+        res = VNPayService.process_file(client)(filename)
+        assert res

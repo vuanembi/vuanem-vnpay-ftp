@@ -16,7 +16,7 @@ def process_file(client: ftplib.FTP):
             FTPRepo.get_content(client),
             bind(FTPRepo.parse_data),
             bind(VNPay.transform),
-            bind(BQRepo.load(DATASET, TABLE, [])),
+            bind(BQRepo.load(DATASET, TABLE, VNPay.schema)),
         )
 
     return process
