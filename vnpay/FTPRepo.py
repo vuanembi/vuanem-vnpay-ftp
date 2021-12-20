@@ -38,3 +38,19 @@ def get_content(client: ftplib.FTP) -> Callable[[str], IOResultE[io.BytesIO]]:
 def parse_data(output: io.BytesIO) -> list[dict]:
     output.seek(0)
     return [i for i in csv.DictReader(io.StringIO(output.read().decode("utf-8-sig")))]
+
+
+def mv_to_dir(dir_: str):
+    def mv(client: ftplib.FTP, filename: str):
+        @impure_safe
+        def _mv(result: int):
+            client.rename(filename, f"{dir_}/{filename}")
+            return result
+
+        return _mv
+
+    return mv
+
+
+mv_to_success = mv_to_dir(SUCCESS_DIR)
+mv_to_failure = mv_to_dir(FAILURE_DIR)
